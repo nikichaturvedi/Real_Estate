@@ -25,25 +25,24 @@ export default async function PropertyDetail({ params }) {
   return (
     <>
       <Navbar />
-      <div className="max-w-7xl mx-auto px-6 mt-16 lg:mt-20 py-10">
+      <div className="max-w-7xl mx-auto  px-2.5 md:px-6 pt-30 md:pt-35 py-10">
         <div className="w-full">
 
           <div
-            className="w-full h-96 bg-center bg-cover rounded-lg mb-6 flex items-start justify-start px-6 py-4"
+            className="w-full h-52 sm:h-96 bg-center bg-cover rounded-lg mb-6 flex items-start justify-start px-6 py-4"
             style={{ backgroundImage: `url(${property.image})` }}
           >
-            <h1 className="text-2xl font-bold text-white rounded">
+            <h1 className="sm:text-2xl text-md font-bold text-white rounded">
               {property.title}
             </h1>
           </div>
 
           <p className="text-sm text-gray-500 mb-4">{property.address}</p>
           <p className="text-lg font-bold text-[#BFA249] mb-4">${property.price}</p>
-          <p className="text-gray-700 mb-6">{property.longDescription}</p>
+          <p className="text-gray-700 mb-3 sm-mb-6">{property.longDescription}</p>
 
 
           <div className="grid grid-cols-1  md:grid-cols-3 gap-8 mt-12">
-            {/* Left Column: Project Overview */}
             <div className="md:col-span-2">
               <h2 className="text-2xl font-bold text-gray-600 mb-6 border-b border-gray-200 pb-2">
                 Project Overview
@@ -87,7 +86,6 @@ export default async function PropertyDetail({ params }) {
               </div>
             </div>
 
-            {/* Right Column*/}
             <div className=" h-fit">
               <div className="md:col-span-2">
                 <h2 className="text-2xl  font-bold text-gray-600 mb-6 border-b border-gray-200 pb-2">
@@ -156,7 +154,7 @@ export default async function PropertyDetail({ params }) {
               </ul>
             </div>
           </div>
-          {/* Amenities of Vatika Jaipur */}
+          
           <div className="mt-16">
 
             <div className="bg-gray-100 rounded-md shadow-md p-6 text-gray-700">
@@ -195,7 +193,6 @@ export default async function PropertyDetail({ params }) {
               </div>
               <div className="grid grid-cols-2  md:grid-cols-2 gap-8 mt-4">
 
-                {/* Medical Facilities */}
                 <div>
                   <h3 className="text-lg font-bold text-gray-600 mb-2 underline underline-offset-2 decoration-[#7b8aa0] decoration-1">Medical Facilities</h3>
                   <ul className="list-disc list-inside space-y-1">
@@ -238,7 +235,6 @@ export default async function PropertyDetail({ params }) {
                   </ul>
                 </div>
 
-                {/* Public and Retail Facilities */}
                 <div>
                   <h3 className="text-lg font-bold text-gray-600 mb-2 underline underline-offset-2 decoration-[#7b8aa0] decoration-1">Public Facilities</h3>
                   <ul className="list-disc list-inside space-y-1">

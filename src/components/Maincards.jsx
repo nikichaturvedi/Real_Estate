@@ -51,7 +51,7 @@ export default function Maincards() {
     <section className="font-sans space-y-8">
 
       {/* Section 1 */}
-      <div className='flex flex-col-reverse md:flex-row items-center justify-between gap-8 px-6 py-4 bg-white'>
+      <div className='flex flex-col-reverse md:flex-row items-center justify-between gap-8 px-2 md:px-6 py-4 bg-white'>
         <div ref={section1Text} className="md:w-1/2 w-full transform">
           <h2 className="text-2xl font-bold mb-1">FIRST</h2>
           <h1 className="text-3xl font-bold mb-4">
@@ -68,22 +68,21 @@ export default function Maincards() {
             alt="Selling home quickly"
             width={600}
             height={300}
-            style={{ height: '350px' }}
-            className="border-8 border-stone-800"
+            className="border-8 border-stone-800 h-56 sm:h-[350px]"
           />
         </div>
+
       </div>
 
       {/* Section 2 */}
-      <div className='flex flex-col md:flex-row items-center justify-between gap-8 px-6 py-4 bg-zinc-100'>
+      <div className='flex flex-col md:flex-row items-center justify-between gap-8 px-3 md:px-6 py-4 bg-zinc-100'>
         <div ref={section2Image} className="md:w-1/2 w-full transform">
           <Image
             src="/mainimg1.jpg"
             alt="Sell property fast"
             width={600}
             height={300}
-            style={{ height: '350px' }}
-            className="border-8 border-stone-800"
+            className="border-8 border-stone-800 h-56 sm:h-[350px]"
           />
         </div>
         <div ref={section2Text} className="md:w-1/2 w-full transform">
@@ -101,7 +100,7 @@ export default function Maincards() {
       </div>
 
       {/* Section 3 */}
-      <div className='flex flex-col-reverse md:flex-row items-center justify-between gap-8 px-6 py-4 bg-white'>
+      <div className='flex flex-col-reverse md:flex-row items-center justify-between gap-8 px-3 md:px-6 py-4 bg-white'>
         <div ref={section3Text} className="md:w-1/2 w-full transform">
           <h2 className="text-2xl font-bold mb-1">AND LET’S NOT FORGET</h2>
           <h1 className="text-3xl font-bold mb-4">
@@ -117,8 +116,7 @@ export default function Maincards() {
             alt="Find perfect home"
             width={600}
             height={300}
-            style={{ height: '350px' }}
-            className="border-8 border-stone-800"
+            className="border-8 border-stone-800 h-56 sm:h-[350px]"
           />
         </div>
       </div>

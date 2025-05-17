@@ -6,8 +6,8 @@ import { properties } from '../data/properties';
 
 function PropertyCard({ id, image, title, address, price, shortDescription }) {
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
-      <div className="relative h-48 w-full">
+    <div className="bg-white shadow-md  rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+      <div className="relative h-36 sm:h-48 w-full">
         <Image
           src={image}
           alt={title}
@@ -21,11 +21,11 @@ function PropertyCard({ id, image, title, address, price, shortDescription }) {
         <h2 className="text-xl font-semibold mb-1">{title}</h2>
         <p className="text-sm text-gray-500 mb-2">{address}</p>
         <p className="text-lg font-bold text-[#BFA249] mb-2">${price}</p>
-        <p className="text-sm text-gray-700 mb-4">{shortDescription}</p>
-        <div className="px-6 pt-4 pb-2">
+        <p className="text-sm text-gray-700 mb-2">{shortDescription}</p>
+        <div >
           <Link
             href={`/PropertyCards/${id}`}
-            className="inline-block text-indigo-600 hover:text-indigo-800 text-sm"
+            className="inline-block text-[#346297] hover:text-indigo-800 text-sm underline underline-offset-2 decoration-[#346297] decoration-1"
           >
             Read more
           </Link>
@@ -62,7 +62,7 @@ export default function PropertyPage() {
   };
 
   return (
-    <section className="px-6 py-10 bg-zinc-100 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section className=" px-2 md:px-6 py-10 bg-zinc-50 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {properties.map((property, index) => {
         const cardRef = useRef(null);
         useScrollAnimation(cardRef);
