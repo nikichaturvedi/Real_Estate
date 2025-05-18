@@ -1,39 +1,36 @@
 import axios from 'axios';
- 
+
 const axiosInstance = axios.create({
   baseURL: 'https://admin-property.onrender.com',
- 
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`
-   
-  }
+  },
 });
- 
-// Request Interceptor
+
+// ✅ Request Interceptor — safely set token only in browser
 axiosInstance.interceptors.request.use(
   (config) => {
- 
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
- 
-// Response Interceptor
+
+// ✅ Response Interceptor
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
       console.error('Unauthorized! Redirecting to login...');
-      // Handle unauthorized errors, e.g., redirect to login page
+      // You can redirect user or remove token here
     }
     return Promise.reject(error);
   }
 );
- 
+
 export default axiosInstance;
- 

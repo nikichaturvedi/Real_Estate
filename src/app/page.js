@@ -14,9 +14,6 @@ export default function Home() {
     <Navbar></Navbar>
     <Hero></Hero>
     <Maincards></Maincards>
-   <div className='text-center'>
-   <h1 className='text-3xl font-bold sm:pt-5 pt-3 pb-5 underline underline-offset-8 decoration-[#BFA249] decoration-4'>Featured Projects</h1>
-   </div>
     <PropertyCard></PropertyCard>
     <HomeServices></HomeServices>
     <Statistics></Statistics>
