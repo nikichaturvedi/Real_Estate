@@ -66,4 +66,8 @@ export const properties = [
         'Get away from it all in this peaceful 2-bedroom, 1-bath rustic cabin, surrounded by woods and hiking trails. Features include a stone fireplace, exposed wood beams, and a wraparound porch perfect for sipping coffee in the mornings. Whether you are looking for a weekend retreat or a year-round hideaway, this cabin is a dream.'
     },
   ];
+
+// import { useState } from "react";
+
   
+// export const [propertyData,setPropertyData]=useStatea
