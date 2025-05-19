@@ -31,7 +31,7 @@ export default async function BlogPost({ params }) {
   return (
     <>
       <Navbar />
-      <div className="flex max-w-7xl mx-auto px-3 md:px-6 pt-30 py-12 gap-8">
+      <div className="flex max-w-7xl mx-auto px-3 md:px-6 pt-30 py-12 gap-8 overflow-x-hidden">
         <div className="w-full md:w-3/5">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">{post.title}</h1>
 

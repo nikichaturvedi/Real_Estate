@@ -8,12 +8,9 @@ export default function JaipurProperties() {
   return (
     
     <>
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-x-hidden">
     <Navbar></Navbar>
     <Propertyhero></Propertyhero>
-     <div className='text-center'>
-    <h1 className='text-3xl font-bold mt-5 mb-5 underline underline-offset-8 decoration-[#BFA249] decoration-4'>Featured Projects</h1>
-    </div>
     <PropertyCard></PropertyCard>
     <Statistics></Statistics>
     <Footer></Footer>
