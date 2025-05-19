@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link'; // ✅ this line is required
+import Link from 'next/link';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 
 export default function Login() {
@@ -13,7 +13,7 @@ export default function Login() {
           alt="Login illustration"
           layout="fill"
           objectFit="cover"
-          className="rounded-r-lg"
+          className=""
         />
       </div>
       <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-50 p-10">
