@@ -19,7 +19,7 @@ export default function RentSellForm() {
 
   // Redirect to login if not logged in
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const isLoggedIn = JSON.parse(localStorage.getItem('userDetails'));
     if (!isLoggedIn) {
       router.push('/LogIn?redirect=/Rent-sell');
     }

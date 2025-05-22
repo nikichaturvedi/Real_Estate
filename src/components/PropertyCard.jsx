@@ -1,28 +1,21 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axiosInstance from './config/axiosInstace';
-import LikeButton from '../components/LikeButton'; 
-export default function PropertyPage() {
-  const [propertyData, setPropertyData] = useState([]);
 
-  // Fetch all properties
-  const view_Property = async () => {
-    try {
-      const response = await axiosInstance.get(`/property/read`);
-      setPropertyData(response.data.allProperty);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+import LikeButton from '../components/LikeButton';
+import { AuthContext } from '@/context/AuthContext';
+
+export default function PropertyPage() {
+  const { view_Property, property } = useContext(AuthContext);
 
   useEffect(() => {
     view_Property();
   }, []);
 
-  const soon_Property = propertyData?.filter((data) => data.status === 'soon');
-  const available_Property = propertyData?.filter((data) => data.status === 'available');
+  const soon_Property = property?.filter((data) => data.status === 'soon');
+  const available_Property = property?.filter((data) => data.status === 'available');
 
   const renderCard = (data) => (
     <div
@@ -30,7 +23,7 @@ export default function PropertyPage() {
       className="bg-white shadow-md rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105"
     >
       <div className="relative h-36 sm:h-48 w-full">
-       
+
         <LikeButton property={data} />
 
         <Image

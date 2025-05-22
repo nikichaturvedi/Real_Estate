@@ -4,12 +4,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+import { FaHeart } from 'react-icons/fa';
+
 import { FiHeart } from 'react-icons/fi';
+
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+
 
   // Check login status on mount
   useEffect(() => {
@@ -18,11 +23,13 @@ export default function Navbar() {
     }
   }, []);
 
+
   const handleRentSellClick = () => {
+    const isLoggedIn = JSON.parse(localStorage.getItem('userDetails'));
     if (isLoggedIn) {
       router.push('/Rent-sell');
     } else {
-      router.push('/LogIn?redirect=/Rent-sell');
+      router.push('/LogIn?redirect=Rent-sell');
     }
   };
 
@@ -34,6 +41,10 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 z-50 w-full bg-white shadow-md border-b-4 border-b-[#BFA249] px-8 py-6 flex items-center justify-between">
+
+
+
+
       <Link href="/" className="flex items-center gap-2">
         <Image
           src="/real-estate-logo.jpg"
@@ -78,19 +89,23 @@ export default function Navbar() {
         )}
       </ul>
 
+
       <div className="hidden lg:flex space-x-4 items-center">
         <Link href="/liked-properties" className="text-[#BFA249] hover:text-red-600 text-xl" title="Liked Properties">
           <FiHeart />
         </Link>
         <button
           onClick={handleRentSellClick}
-          className="bg-[#BFA249] underline-offset-8 text-white px-3 py-1 hover:bg-[#9E8437] font-bold underline decoration-amber-50 hover:underline-offset-8"
+          className="bg-[#BFA249] underline-offset-8 text-white px-3 py-1 cursor-pointer hover:bg-[#9E8437] font-bold underline decoration-amber-50 hover:underline-offset-8"
         >
           + Sell / Rent Property
         </button>
       </div>
 
+
+
       {/* Mobile Menu Icon */}
+
       <div className="lg:hidden flex items-center space-x-3">
         <Link href="/liked-properties" className="text-[#BFA249] text-xl hover:text-red-600" title="Liked Properties">
           <FiHeart />
@@ -112,6 +127,9 @@ export default function Navbar() {
             <li><Link href="/Services" onClick={() => setIsMobileMenuOpen(false)}>Service Offered</Link></li>
             <li><Link href="/Blogs" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link></li>
             <li><Link href="/Contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link></li>
+
+            <li><Link href="/LogIn" onClick={() => setIsMobileMenuOpen(false)}>Log in</Link></li>
+
             {isLoggedIn ? (
               <li>
                 <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}>Log out</button>
@@ -121,6 +139,7 @@ export default function Navbar() {
                 <Link href="/LogIn" onClick={() => setIsMobileMenuOpen(false)}>Log in</Link>
               </li>
             )}
+
             <li>
               <button
                 onClick={() => {
