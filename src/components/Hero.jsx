@@ -1,3 +1,4 @@
+
 "use client"
 import { useContext, useEffect, useState } from 'react';
 import axiosInstance from './config/axiosInstace';
@@ -61,21 +62,24 @@ export default function Hero() {
         </div>
         <div className=" grid  grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]" >
+
             <option>Property For Sale</option>
             <option>Property On Rent</option>
           </select>
-          <select className=" w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
+
+          <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
             <option>Property Type</option>
             <option>Commercial Property</option>
             <option>- Commerical Plot / Land</option>
             <option>- Hotel | Guest House | Resort</option>
             <option>- Indurstial Land</option>
-            <option>- Office Space </option>
+            <option>- Office Space</option>
             <option>- Restaurant Space</option>
             <option>- Apartment | Flat</option>
             <option>- Farm House</option>
             <option>- Plot | Land</option>
           </select>
+
           <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
             <option>Date New to Old</option>
             <option>Search Property By</option>
@@ -83,11 +87,19 @@ export default function Hero() {
             <option>Price High to Low</option>
             <option>Date Old to New</option>
           </select>
+
+          <Link
+            href="/search"
+            className="text-center bg-[#BFA249] text-white px-4 py-2 rounded hover:bg-[#a88e37] flex items-center justify-center"
+          >
+
           <button className=" w-full bg-[#BFA249] text-white px-14 py-2 rounded hover:bg-[#a88e37]">
+
             Search
-          </button>
+            </button>
+          </Link>
         </div>
-      </div>
+ </div>
     </section>
   );
 }

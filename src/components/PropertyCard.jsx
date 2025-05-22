@@ -3,8 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import axiosInstance from './config/axiosInstace';
-import LikeButton from '../components/LikeButton'; // Import the LikeButton component
-
+import LikeButton from '../components/LikeButton'; 
 export default function PropertyPage() {
   const [propertyData, setPropertyData] = useState([]);
 
@@ -31,7 +30,7 @@ export default function PropertyPage() {
       className="bg-white shadow-md rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105"
     >
       <div className="relative h-36 sm:h-48 w-full">
-        {/* Use LikeButton component here */}
+       
         <LikeButton property={data} />
 
         <Image

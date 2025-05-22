@@ -7,6 +7,10 @@ import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { use, useEffect, useState } from "react"
 import { FaHeart } from 'react-icons/fa';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+
 
 export default function details({ params }) {
     const { id } = use(params);
@@ -50,26 +54,78 @@ export default function details({ params }) {
         localStorage.setItem('likedProperties', JSON.stringify(updated));
         setLiked(!liked);
     };
+
+
+    const sliderSettings = {
+        dots: true,
+        speed: 100,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        autoplay: true,
+        autoplaySpeed: 2000,
+    };
+
+    const imageArray = Array.isArray(property?.maltipleImage)
+        ? [...new Set(property.maltipleImage.map(img => img.trim()))]
+        : typeof property?.maltipleImage === 'string'
+            ? [...new Set(property.maltipleImage.split(',').map(img => img.trim()))]
+            : [];
+
+
+
     return (
         <>
             <Navbar />
             <div className="max-w-7xl mx-auto px-2.5 md:px-6 pt-30 md:pt-35 py-10 overflow-x-hidden">
                 <div className="w-full">
-                    <div
-                        className="w-full h-52 sm:h-96 bg-center bg-cover rounded-lg mb-6 relative"
-                        style={{ backgroundImage: `url(${property?.mainImage})` }}
-                    >
-                        <h1 className="absolute top-4 left-4 sm:text-2xl font-bold text-white px-2 py-1 rounded">
-                            {property?.title}
-                        </h1>
-                        <button
-                            onClick={toggleLike}
-                            className="absolute top-4 right-4 bg-white/70 p-2 rounded-full shadow hover:scale-110 transition-transform"
-                            aria-label="Like"
-                        >
-                            <FaHeart className={`text-xl ${liked ? 'text-red-500' : 'text-white'}`} />
-                        </button>
-                    </div>
+                    {imageArray.length > 0 && (
+                        imageArray.length === 1 ? (
+                            <div className="relative w-full h-52 sm:h-96 mb-6">
+                                <img
+                                    src={imageArray[0]}
+                                    alt="Property Image"
+                                    className="w-full rounded-lg h-full object-cover"
+                                />
+                                <h1 className="absolute top-4 left-4 sm:text-2xl font-bold text-white px-2 py-1 rounded">
+                                    {property?.title}
+                                </h1>
+                                <button
+                                    onClick={toggleLike}
+                                    className="absolute top-4 right-4 bg-white/70 p-2 rounded-full shadow hover:scale-110 transition-transform"
+                                    aria-label="Like"
+                                >
+                                    <FaHeart className={`text-xl ${liked ? 'text-red-500' : 'text-white'}`} />
+                                </button>
+                            </div>
+                        ) : (
+                            <Slider {...sliderSettings} className="mb-6 rounded-lg [&_.slick-dots]:!block [&_.slick-dots]:bottom-2 [&_.slick-dots]:z-10">
+                                {imageArray.map((img, index) => (
+                                    <div key={index} className="relative w-full h-52 sm:h-96">
+                                        <img
+                                            src={img}
+                                            alt={`Property Image ${index + 1}`}
+                                            className="w-full rounded-lg h-full object-cover"
+                                        />
+                                        {index === 0 && (
+                                            <>
+                                                <h1 className="absolute top-4 left-4 sm:text-2xl font-bold text-white px-2 py-1 rounded">
+                                                    {property?.title}
+                                                </h1>
+                                                <button
+                                                    onClick={toggleLike}
+                                                    className="absolute top-4 right-4 bg-white/70 p-2 rounded-full shadow hover:scale-110 transition-transform"
+                                                    aria-label="Like"
+                                                >
+                                                    <FaHeart className={`text-xl ${liked ? 'text-red-500' : 'text-white'}`} />
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                ))}
+                            </Slider>
+                        )
+                    )}
 
                     <div className="mb-6 flex flex-col md:flex-row md:space-x-4 text-sm text-gray-700">
                         <div className="space-y-1">
@@ -83,14 +139,13 @@ export default function details({ params }) {
 
                         <div className="space-y-1 md:ml-4">
                             <p>
-                                <span className="text-gray-500 font-semibold">By:</span> {property?.category}
+                                <span className="text-gray-500 font-semibold">By:</span> {property?.user?.company}
                             </p>
                             <p>
                                 <span className="text-gray-500 font-semibold">Status:</span> {property?.status}
                             </p>
                         </div>
                     </div>
-
 
                     <p className="text-gray-700 mb-3 sm-mb-6">{property?.long_description}</p>
 
