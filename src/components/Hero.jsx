@@ -1,10 +1,21 @@
 "use client"
 import { useContext, useEffect, useState } from 'react';
 import axiosInstance from './config/axiosInstace';
+import Select from 'react-select';
+import { AuthContext } from '@/context/AuthContext';
 export default function Hero() {
+  const { view_Property, property } = useContext(AuthContext);
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [images, setImage] = useState([])
+
+  const filterOptions = [
+    { value: 'new-to-old', label: 'Date New to Old' },
+    { value: 'old-to-new', label: 'Date Old to New' },
+    { value: 'low-to-high', label: 'Price Low to High' },
+    { value: 'high-to-low', label: 'Price High to Low' }
+  ];
 
   // view banner part
   const view_Banner = async () => {
@@ -22,6 +33,7 @@ export default function Hero() {
 
   useEffect(
     () => {
+      view_Property();
       view_Banner()
     }, []
   )
@@ -60,11 +72,32 @@ export default function Hero() {
           <h1 className="text-2xl font-bold text-[#8a98ad]">Discover Your Dream Home</h1>
         </div>
         <div className=" grid  grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]" >
-            <option>Property For Sale</option>
-            <option>Property On Rent</option>
-          </select>
-          <select className=" w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
+          <Select
+            name="property_Type"
+            placeholder='Property Type'
+            options={Array.from(
+              new Set(property?.map(item => item.propertyType))
+            ).map(type => ({
+              value: type,
+              label: `Property for ${type}`
+            }))}
+          />
+          {/* <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]" >
+            <option value='sale'>Property For Sale</option>
+            <option value='rent'>Property On Rent</option>
+          </select> */}
+
+          <Select
+            name="property_Category"
+            placeholder='Property Category'
+            options={Array.from(
+              new Set(property?.map(item => item.category))
+            ).map(type => ({
+              value: type,
+              label: type
+            }))}
+          />
+          {/* <select className=" w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
             <option>Property Type</option>
             <option>Commercial Property</option>
             <option>- Commerical Plot / Land</option>
@@ -75,14 +108,23 @@ export default function Hero() {
             <option>- Apartment | Flat</option>
             <option>- Farm House</option>
             <option>- Plot | Land</option>
-          </select>
-          <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
+          </select> */}
+
+          <Select
+            name="property_Date"
+            placeholder='Filter'
+            options={filterOptions?.map(item => { return { value: item.value, label: item.label } }
+            )
+
+            }
+          />
+          {/* <select className="w-full px-4 py-2 rounded  focus:outline-none outline-1 outline-gray-300">
             <option>Date New to Old</option>
             <option>Search Property By</option>
             <option>Price Low to High</option>
             <option>Price High to Low</option>
             <option>Date Old to New</option>
-          </select>
+          </select> */}
           <button className=" w-full bg-[#BFA249] text-white px-14 py-2 rounded hover:bg-[#a88e37]">
             Search
           </button>

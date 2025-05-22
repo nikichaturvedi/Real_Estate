@@ -1,11 +1,22 @@
 'use client';
 
+import axiosInstance from '@/components/config/axiosInstace';
 import { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [property, setProperty] = useState([]);
+
+  const view_Property = async () => {
+    try {
+      const response = await axiosInstance.get(`/property/read`);
+      setProperty(response.data.allProperty);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -25,10 +36,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, view_Property, property }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(AuthContext);
+

@@ -10,16 +10,20 @@ import { FaHeart } from 'react-icons/fa';
 export default function LikedPropertiesPage() {
   const [likedProperties, setLikedProperties] = useState([]);
 
+
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('likedProperties') || '[]');
-    setLikedProperties(stored);
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    if (userDetails) {
+      setLikedProperties(userDetails.likedProperties || []);
+    }
+
   }, []);
 
-  const removeFromLiked = (id) => {
-    const updated = likedProperties.filter((property) => property._id !== id);
-    setLikedProperties(updated);
-    localStorage.setItem('likedProperties', JSON.stringify(updated));
-  };
+  // const removeFromLiked = (id) => {
+  //   const updated = likedProperties.filter((property) => property._id !== id);
+  //   setLikedProperties(updated);
+  //   localStorage.setItem('likedProperties', JSON.stringify(updated));
+  // };
 
   if (likedProperties.length === 0) {
     return (
@@ -45,9 +49,9 @@ export default function LikedPropertiesPage() {
       </h1>
 
       <div className="px-3 md:px-6 md:pb-7 pb-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {likedProperties.map((data) => (
+        {likedProperties.map((data, index) => (
           <div
-            key={data._id}
+            key={index}
             className="bg-white shadow-md rounded-lg overflow-x-hidden overflow-hidden transition-transform duration-300 hover:scale-105 relative"
           >
             {/* Remove Button */}
