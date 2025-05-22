@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useContext, useEffect, useState } from 'react';
 import axiosInstance from './config/axiosInstace';
+
 import LikeButton from '../components/LikeButton';
 import { AuthContext } from '@/context/AuthContext';
 
@@ -22,6 +23,7 @@ export default function PropertyPage() {
       className="bg-white shadow-md rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105"
     >
       <div className="relative h-36 sm:h-48 w-full">
+
         <LikeButton property={data} />
 
         <Image

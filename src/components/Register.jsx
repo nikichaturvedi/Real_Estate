@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import {
-  FaCamera, FaEnvelope, FaPhone, FaUser, FaLock, FaUserTag,
+  FaCamera, FaEnvelope, FaPhone, FaUser, FaLock,
   FaMapMarkerAlt, FaBuilding, FaHome, FaStar
 } from 'react-icons/fa';
 
@@ -25,11 +25,15 @@ export default function RegisterForm() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (name === 'profile_Photo') {
       const file = files[0];
       setFormData({ ...formData, profile_Photo: file });
       setPreview(URL.createObjectURL(file));
     } else {
+      if (name === 'rating') {
+        if (value < 0 || value > 5) return;
+      }
       setFormData({ ...formData, [name]: value });
     }
   };
@@ -38,29 +42,30 @@ export default function RegisterForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const dataToSubmit = new FormData();
 
     if (formData.password !== formData.repassword) {
       alert('Passwords do not match');
       return;
     }
 
+    const dataToSubmit = new FormData();
+
     Object.entries(formData).forEach(([key, val]) => {
       if (role === 'user' && ['company', 'property', 'rating'].includes(key)) return;
-      if (key === 'repassword') return; // Do not send repassword
+      if (key === 'repassword') return;
       dataToSubmit.append(key, val);
     });
 
     for (let pair of dataToSubmit.entries()) {
-      console.log(pair[0], pair[1]);
+      console.log(pair[0], pair[1]); 
     }
+
+    alert('Form submitted!');
   };
 
   const renderInput = (name, placeholder, icon, type = 'text') => (
     <div className="relative">
-      <span className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400">
-        {icon}
-      </span>
+      <span className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400">{icon}</span>
       <input
         type={type}
         name={name}
@@ -69,18 +74,23 @@ export default function RegisterForm() {
         placeholder={placeholder}
         className="w-full pl-10 border border-gray-400 p-2 rounded-md placeholder-gray-400"
         required={['name', 'email', 'phone', 'password', 'repassword'].includes(name)}
+        min={name === 'rating' ? 0 : undefined}
+        max={name === 'rating' ? 5 : undefined}
       />
     </div>
   );
 
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row">
+     
       <div className="hidden md:block md:w-1/3 relative">
         <Image src="/card2.jpg" alt="Login illustration" fill className="object-cover" />
       </div>
 
+      
       <div className="w-full md:w-2/3 flex items-center justify-center bg-gray-50 md:px-6 py-10">
         <div className="w-full px-4">
+          
           <div className="flex flex-col items-center mb-6 relative">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#527baa] pb-4 text-center">Set up your account</h2>
             <div className="relative group cursor-pointer">
@@ -119,13 +129,7 @@ export default function RegisterForm() {
               </select>
             </div>
 
-            <div
-              className={`grid gap-4 ${
-                role === 'agent'
-                  ? 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4'
-                  : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3'
-              }`}
-            >
+            <div className={`grid gap-4 ${role === 'agent' ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-2 lg:grid-cols-3'}`}>
               {renderInput('name', 'Full Name', <FaUser />)}
               {renderInput('email', 'Email', <FaEnvelope />, 'email')}
               {renderInput('phone', 'Phone', <FaPhone />, 'tel')}
@@ -142,21 +146,15 @@ export default function RegisterForm() {
             </div>
 
             {role === 'agent' ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {renderInput('rating', 'Rating (0-5)', <FaStar />, 'number')}
-                <button
-                  type="submit"
-                  className="bg-[#527baa] hover:bg-[#42689a] text-white py-2 px-4 rounded-md font-semibold text-lg transition w-full"
-                >
+                <button type="submit" className="bg-[#527baa] hover:bg-[#42689a] text-white py-2 px-4 rounded-md font-semibold text-lg transition w-full">
                   Submit
                 </button>
               </div>
             ) : (
               <div className="flex justify-center">
-                <button
-                  type="submit"
-                  className="bg-[#527baa] hover:bg-[#42689a] text-white py-2 px-6 rounded-md font-semibold text-lg transition"
-                >
+                <button type="submit" className="bg-[#527baa] hover:bg-[#42689a] text-white py-2 px-6 rounded-md font-semibold text-lg transition">
                   Submit
                 </button>
               </div>

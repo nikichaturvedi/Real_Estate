@@ -1,3 +1,4 @@
+
 "use client"
 import { useContext, useEffect, useState } from 'react';
 import axiosInstance from './config/axiosInstace';
@@ -72,6 +73,7 @@ export default function Hero() {
           <h1 className="text-2xl font-bold text-[#8a98ad]">Discover Your Dream Home</h1>
         </div>
         <div className=" grid  grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
           <Select
             name="property_Type"
             placeholder='Property Type'
@@ -98,16 +100,26 @@ export default function Hero() {
             }))}
           />
           {/* <select className=" w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
+
+          <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]" >
+
+            <option>Property For Sale</option>
+            <option>Property On Rent</option>
+          </select>
+
+          <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
+
             <option>Property Type</option>
             <option>Commercial Property</option>
             <option>- Commerical Plot / Land</option>
             <option>- Hotel | Guest House | Resort</option>
             <option>- Indurstial Land</option>
-            <option>- Office Space </option>
+            <option>- Office Space</option>
             <option>- Restaurant Space</option>
             <option>- Apartment | Flat</option>
             <option>- Farm House</option>
             <option>- Plot | Land</option>
+
           </select> */}
 
           <Select
@@ -119,17 +131,33 @@ export default function Hero() {
             }
           />
           {/* <select className="w-full px-4 py-2 rounded  focus:outline-none outline-1 outline-gray-300">
+
+          </select>
+
+          <select className="w-full px-4 py-2 rounded border focus:outline-none outline-1 outline-[#BFA249]">
+
             <option>Date New to Old</option>
             <option>Search Property By</option>
             <option>Price Low to High</option>
             <option>Price High to Low</option>
             <option>Date Old to New</option>
+
           </select> */}
+
+          </select>
+
+          <Link
+            href="/search"
+            className="text-center bg-[#BFA249] text-white px-4 py-2 rounded hover:bg-[#a88e37] flex items-center justify-center"
+          >
+
           <button className=" w-full bg-[#BFA249] text-white px-14 py-2 rounded hover:bg-[#a88e37]">
+
             Search
-          </button>
+            </button>
+          </Link>
         </div>
-      </div>
+ </div>
     </section>
   );
 }
