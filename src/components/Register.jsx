@@ -21,7 +21,7 @@ export default function RegisterForm() {
     e.preventDefault();
 
     if (e.target.password.value !== e.target.repassword.value) {
-      alert('Passwords do not match');
+      alert(`Passwords don't match`);
       return;
     }
 
