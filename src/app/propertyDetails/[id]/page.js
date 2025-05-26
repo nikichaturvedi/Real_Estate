@@ -5,55 +5,82 @@ import Navbar from "@/components/Navbar";
 import Statistics from "@/components/Statistics";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { use, useEffect, useState } from "react"
+import { use, useContext, useEffect, useState } from "react"
 import { FaHeart } from 'react-icons/fa';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import LikeButton from "@/components/LikeButton";
+import SearchProperty from "@/components/SearchProperty";
+import { AuthContext } from "@/context/AuthContext";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 
 export default function details({ params }) {
+    const { view_Property, showAlert } = useContext(AuthContext);
+    const user = useSelector(state => state.user.data)
     const { id } = use(params);
-    const [property, setProperty] = useState();
-    const [liked, setLiked] = useState(false);
+    const router = useRouter()
+    const [selectProperty, setselectPropert] = useState();
+    const [requestType, setRequestType] = useState('buy');
+    const [message, setMessage] = useState('');
 
-    useEffect(() => {
-        view_Property();
-        checkIfLiked();
-    }, []);
 
-    const view_Property = async () => {
+    const view_Property_Details = async () => {
         try {
             const response = await axiosInstance.get(`/property/read?id=${id}`);
-            setProperty(response.data.allProperty);
+            setselectPropert(response.data.allProperty);
         } catch (error) {
             console.log(error);
         }
     };
 
-    const checkIfLiked = () => {
-        const stored = JSON.parse(localStorage.getItem('likedProperties') || '[]');
-        const isLiked = stored.some((item) => item._id === id);
-        setLiked(isLiked);
-    };
-
-    const toggleLike = () => {
-        const stored = JSON.parse(localStorage.getItem('likedProperties') || '[]');
-        let updated;
-
-        if (liked) {
-            // Remove from liked
-            updated = stored.filter((item) => item._id !== id);
-        } else {
-            // Add to liked
-            if (property) {
-                updated = [...stored, property];
-            }
+    // reques tHendler part
+    const requestHendler = async (e) => {
+        e.preventDefault();
+        if (!user) {
+            router.push(`/LogIn?redirect=/propertyDetails/${id}`)
         }
+        try {
+            const res = await axiosInstance.post('/req/create', {
+                property_Id: id,
+                propertyOwnerId: selectProperty?.user._id,
+                requestType,
+                message,
+            });
+            showAlert(res.data.status, res.data.msg);
+            if (res.data.status === 1) {
+                setMessage('');
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
-        localStorage.setItem('likedProperties', JSON.stringify(updated));
-        setLiked(!liked);
-    };
+    // const checkIfLiked = () => {
+    //     const stored = JSON.parse(localStorage.getItem('likedProperties') || '[]');
+    //     const isLiked = stored.some((item) => item._id === id);
+    //     setLiked(isLiked);
+    // };
+
+    // const toggleLike = () => {
+    //     const stored = JSON.parse(localStorage.getItem('likedProperties') || '[]');
+    //     let updated;
+
+    //     if (liked) {
+
+    //         updated = stored.filter((item) => item._id !== id);
+    //     } else {
+
+    //         if (property) {
+    //             updated = [...stored, property];
+    //         }
+    //     }
+
+    //     localStorage.setItem('likedProperties', JSON.stringify(updated));
+    //     setLiked(!liked);
+    // };
 
 
     const sliderSettings = {
@@ -66,12 +93,17 @@ export default function details({ params }) {
         autoplaySpeed: 2000,
     };
 
-    const imageArray = Array.isArray(property?.maltipleImage)
-        ? [...new Set(property.maltipleImage.map(img => img.trim()))]
-        : typeof property?.maltipleImage === 'string'
-            ? [...new Set(property.maltipleImage.split(',').map(img => img.trim()))]
+    const imageArray = Array.isArray(selectProperty?.maltipleImage)
+        ? [...new Set(selectProperty.maltipleImage.map(img => img.trim()))]
+        : typeof selectProperty?.maltipleImage === 'string'
+            ? [...new Set(selectProperty.maltipleImage.split(',').map(img => img.trim()))]
             : [];
 
+    useEffect(() => {
+        view_Property();
+        // checkIfLiked();
+        view_Property_Details()
+    }, []);
 
 
     return (
@@ -88,15 +120,9 @@ export default function details({ params }) {
                                     className="w-full rounded-lg h-full object-cover"
                                 />
                                 <h1 className="absolute top-4 left-4 sm:text-2xl font-bold text-white px-2 py-1 rounded">
-                                    {property?.title}
+                                    {selectProperty?.title}
                                 </h1>
-                                <button
-                                    onClick={toggleLike}
-                                    className="absolute top-4 right-4 bg-white/70 p-2 rounded-full shadow hover:scale-110 transition-transform"
-                                    aria-label="Like"
-                                >
-                                    <FaHeart className={`text-xl ${liked ? 'text-red-500' : 'text-white'}`} />
-                                </button>
+                                {/* <LikeButton property={data} /> */}
                             </div>
                         ) : (
                             <Slider {...sliderSettings} className="mb-6 rounded-lg [&_.slick-dots]:!block [&_.slick-dots]:bottom-2 [&_.slick-dots]:z-10">
@@ -110,15 +136,15 @@ export default function details({ params }) {
                                         {index === 0 && (
                                             <>
                                                 <h1 className="absolute top-4 left-4 sm:text-2xl font-bold text-white px-2 py-1 rounded">
-                                                    {property?.title}
+                                                    {selectProperty?.title}
                                                 </h1>
-                                                <button
+                                                {/* <button
                                                     onClick={toggleLike}
                                                     className="absolute top-4 right-4 bg-white/70 p-2 rounded-full shadow hover:scale-110 transition-transform"
                                                     aria-label="Like"
                                                 >
                                                     <FaHeart className={`text-xl ${liked ? 'text-red-500' : 'text-white'}`} />
-                                                </button>
+                                                </button> */}
                                             </>
                                         )}
                                     </div>
@@ -127,27 +153,52 @@ export default function details({ params }) {
                         )
                     )}
 
-                    <div className="mb-6 flex flex-col md:flex-row md:space-x-4 text-sm text-gray-700">
-                        <div className="space-y-1">
-                            <p className="text-gray-500">
-                                <span className="font-semibold">Location:</span> {property?.area}, {property?.city}, {property?.state}
+                    <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-700 bg-white p-4 rounded-md shadow-sm border">
+                        <div className="space-y-2">
+                            <p>
+                                <span className="font-semibold text-gray-500">Location:</span>{" "}
+                                {selectProperty?.area}, {selectProperty?.city}, {selectProperty?.state}
                             </p>
-                            <p className="text-[#BFA249]">
-                                <span className="text-gray-500 font-semibold">Price:</span> ₹{property?.price}
+                            <p>
+                                <span className="font-semibold text-gray-500">Price:</span>{" "}
+                                <span className="text-[#BFA249] font-semibold">₹{selectProperty?.price}</span>
+                            </p>
+                            <p>
+                                <span className="font-semibold text-gray-500">Type:</span>{" "}
+                                {selectProperty?.propertyType}
                             </p>
                         </div>
 
-                        <div className="space-y-1 md:ml-4">
+                        <div className="space-y-2">
                             <p>
-                                <span className="text-gray-500 font-semibold">By:</span> {property?.user?.company}
+                                <span className="font-semibold text-gray-500">Owner:</span>{" "}
+                                {selectProperty?.user?.name}
                             </p>
                             <p>
-                                <span className="text-gray-500 font-semibold">Status:</span> {property?.status}
+                                <span className="font-semibold text-gray-500">Company:</span>{" "}
+                                {selectProperty?.user?.company || "Not Registered"}
+                            </p>
+                            <p>
+                                <span className="font-semibold text-gray-500">Status:</span>{" "}
+                                <span className={`font-semibold ${selectProperty?.status === "active" ? "text-green-600" : "text-red-500"}`}>
+                                    {selectProperty?.status}
+                                </span>
                             </p>
                         </div>
+
+                        {/* <div className="space-y-2">
+                            <p>
+                                <span className="font-semibold text-gray-500">Interested For:</span>{" "}
+                                <span className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded-md text-xs font-medium" onClick={requestHendler}>
+                                    {selectProperty?.propertyType == 'sell' ? "Buy" : "Rent"}
+                                </span>
+                            </p>
+                        </div> */}
                     </div>
 
-                    <p className="text-gray-700 mb-3 sm-mb-6">{property?.long_description}</p>
+
+
+                    <p className="text-gray-700 mb-3 sm-mb-6">{selectProperty?.long_description}</p>
 
 
                     <div className="grid grid-cols-1  md:grid-cols-3 gap-8 mt-12">
@@ -164,12 +215,12 @@ export default function details({ params }) {
                                                 Project Name
                                             </td>
                                             <td className="py-4 px-6 text-gray-800 font-semibold bg-gray-100">
-                                                {property?.title}
+                                                {selectProperty?.title}
                                             </td>
                                         </tr>
                                         <tr className="border-b border-gray-200 hover:bg-gray-100 transition">
                                             <td className="py-4 px-6 text-gray-500 font-medium bg-gray-50">Location</td>
-                                            <td className="py-4 px-6 text-gray-800"> {property?.area}, {property?.city}, {property?.state}</td>
+                                            <td className="py-4 px-6 text-gray-800"> {selectProperty?.area}, {selectProperty?.city}, {selectProperty?.state}</td>
                                         </tr>
                                         <tr className="border-b border-gray-200 hover:bg-gray-100 transition">
                                             <td className="py-4 px-6 text-gray-500 font-medium bg-gray-50">Area Size</td>
@@ -178,20 +229,20 @@ export default function details({ params }) {
                                         <tr className="border-b border-gray-200 hover:bg-gray-100 transition">
                                             <td className="py-4 px-6 text-gray-500 font-medium bg-gray-50">Price</td>
                                             <td className="py-4 px-6 text-[#BFA249] font-bold text-lg">
-                                                ₹{property?.price}
+                                                ₹{selectProperty?.price}
                                             </td>
                                         </tr>
                                         <tr className="border-b border-gray-200 hover:bg-gray-100 transition">
                                             <td className="py-4 px-6 text-gray-500 font-medium bg-gray-50">Category</td>
-                                            <td className="py-4 px-6 text-gray-800">{property?.category}</td>
+                                            <td className="py-4 px-6 text-gray-800">{selectProperty?.category}</td>
                                         </tr>
                                         <tr className="border-b border-gray-200 hover:bg-gray-100 transition">
                                             <td className="py-4 px-6 text-gray-500 font-medium bg-gray-50">Property Type</td>
-                                            <td className="py-4 px-6 text-gray-800">{property?.propertyType}</td>
+                                            <td className="py-4 px-6 text-gray-800">{selectProperty?.propertyType}</td>
                                         </tr>
                                         <tr className="transition hover:bg-gray-100 ">
                                             <td className="py-4 px-6 text-gray-500 font-medium bg-gray-50">Year Built</td>
-                                            <td className="py-4 px-6 text-gray-800">{property?.createdAt}</td>
+                                            <td className="py-4 px-6 text-gray-800">{selectProperty?.createdAt}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -201,36 +252,46 @@ export default function details({ params }) {
                         <div className=" h-fit">
                             <div className="md:col-span-2">
                                 <h2 className="text-2xl  font-bold text-gray-600 mb-6 border-b border-gray-200 pb-2">
-                                    Property Search
+                                    Request a Callback
                                 </h2>
                             </div>
-                            <div className="p-6 grid grid-cols-1 gap-4 bg-gray-100 rounded-md shadow-md overflow-hidden">
-                                <select className="w-full px-4 py-3 rounded border focus:outline-none  ">
-                                    <option>Property For Sale</option>
-                                    <option>Property On Rent</option>
-                                </select>
-                                <select className="w-full px-4 py-3 rounded border focus:outline-none 1 mt-4 ">
-                                    <option>Property Type</option>
-                                    <option>Commercial Property</option>
-                                    <option>- Commerical Plot / Land</option>
-                                    <option>- Hotel | Guest House | Resort</option>
-                                    <option>- Indurstial Land</option>
-                                    <option>- Office Space</option>
-                                    <option>- Restaurant Space</option>
-                                    <option>- Apartment | Flat</option>
-                                    <option>- Farm House</option>
-                                    <option>- Plot | Land</option>
-                                </select>
-                                <select className="w-full px-4 py-3 rounded border focus:outline-none  mt-4 ">
-                                    <option>Date New to Old</option>
-                                    <option>Search Property By</option>
-                                    <option>Price Low to High</option>
-                                    <option>Price High to Low</option>
-                                    <option>Date Old to New</option>
-                                </select>
-                                <button className="w-full bg-[#BFA249] text-white px-4 py-3 rounded mt-8 hover:bg-[#a88e37]">
-                                    Search
-                                </button>
+                            <div className="p-4 border rounded-md shadow-sm bg-white mt-4">
+                                <h2 className="text-lg font-semibold mb-2 text-[#BFA249]">Send a Request</h2>
+                                <form onSubmit={requestHendler} className="space-y-3">
+                                    <div>
+                                        <label className="block mb-1 text-sm font-medium text-gray-600">Request Type</label>
+                                        <select
+                                            value={requestType}
+                                            onChange={(e) => setRequestType(e.target.value)}
+                                            required
+                                            className="w-full border px-3 py-2 rounded-md"
+                                        >
+                                            <option value="buy">Buy</option>
+                                            <option value="rent">Rent</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block mb-1 text-sm font-medium text-gray-600">Message (optional)</label>
+                                        <textarea
+                                            rows={3}
+                                            value={message}
+                                            onChange={(e) => setMessage(e.target.value)}
+                                            className="w-full border px-3 py-2 rounded-md"
+                                            placeholder="Write a short note to the owner"
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className="bg-[#BFA249] cursor-pointer hover:bg-[#9E8437] text-white px-4 py-2 rounded-md"
+                                    >
+                                        Send Request
+                                    </button>
+
+                                    {/* {<p className="text-green-600 text-sm">success</p>} */}
+                                    {/* {<p className="text-red-500 text-sm">error</p>} */}
+                                </form>
                             </div>
                         </div>
                     </div>

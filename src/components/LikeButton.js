@@ -1,32 +1,22 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { FaHeart } from 'react-icons/fa';
 import axiosInstance from './config/axiosInstace';
 import Swal from 'sweetalert2';
+import { AuthContext } from '@/context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { lsDataUpdate } from '@/app/redux/reducer/userSlice';
 
 const LikeButton = ({ property }) => {
+  const { showAlert } = useContext(AuthContext);
   const [liked, setLiked] = useState(false);
   const router = useRouter()
+  const user = useSelector(state => state.user.data);
+  const dispatch = useDispatch();
 
-  const showAlert = (type, message) => {
-
-    const toast = Swal.mixin({
-      toast: true,
-      position: 'top-end',
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-    toast.fire({
-      icon: type == 1 ? 'success' : 'error',
-      title: message,
-      padding: '10px 20px',
-    });
-
-  };
-  let userDetails;
-  let likedProperties;
+  // let userDetails;
+  // let likedProperties;
   // useEffect(() => {
   //   const likedProperties = JSON.parse(localStorage.getItem('likedProperties') || '[]');
   //   const isLiked = likedProperties.some(item => item._id === property._id);
@@ -34,13 +24,11 @@ const LikeButton = ({ property }) => {
   // }, [property]);
 
   const toggleLike = async () => {
-    userDetails = JSON.parse(localStorage.getItem('userDetails'))
-    likedProperties = userDetails?.likedProperties.filter(data => data == property._id)
-    if (!userDetails) {
+    if (!user) {
       router.push('/LogIn')
     }
     const data = {
-      userId: userDetails._id,
+      userId: user._id,
       propertyId: property._id
     }
     try {
@@ -53,22 +41,27 @@ const LikeButton = ({ property }) => {
       const response = await axiosInstance.post(`/user/${API}`, data);
       showAlert(response.data.status, response.data.msg)
       if (response.data.status == 1) {
-        localStorage.setItem('userDetails', JSON.stringify(response.data.user));
-        setLiked(response.data.user.likedProperties.includes(property._id));
+        dispatch(lsDataUpdate({ user: response.data.user }))
+        // const updateUser = response.data.user
+        // localStorage.setItem('userDetails', JSON.stringify(updateUser));
+        setLiked(user.likedProperties.some(data => data._id == property._id));
       }
 
     } catch (error) {
+      console.log(error);
 
     }
   };
+
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-    if (userDetails && userDetails.likedProperties?.includes(property._id)) {
+    // const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    if (user && user.likedProperties?.some(data => data._id == property._id)) {
       setLiked(true);
     } else {
       setLiked(false);
     }
-  }, [property._id]);
+  }, [property._id, user?.likedProperties]);
+
   return (
     <button
       onClick={toggleLike}

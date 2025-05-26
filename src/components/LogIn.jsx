@@ -6,29 +6,19 @@ import { FaEnvelope, FaLock } from 'react-icons/fa';
 import axiosInstance from './config/axiosInstace';
 import Swal from 'sweetalert2';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { login } from '@/app/redux/reducer/userSlice';
+import { useContext } from 'react';
+import { AuthContext } from '@/context/AuthContext';
+
 
 export default function Login() {
   const router = useRouter()
   const searchUrl = useSearchParams();
+  const dispatch = useDispatch()
+  const { showAlert } = useContext(AuthContext);
 
-  const showAlert = (type, message) => {
 
-    const toast = Swal.mixin({
-      toast: true,
-      position: 'top-end',
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-    toast.fire({
-      icon: type == 1 ? 'success' : 'error',
-      title: message,
-      padding: '10px 20px',
-      background: 'gray',
-      color: 'white'
-    });
-
-  };
   const loginhendler = async (event) => {
     event.preventDefault();
     const { email, password } = event.target;
@@ -39,7 +29,10 @@ export default function Login() {
     const response = await axiosInstance.post('user/login', formData);
     showAlert(response.data.status, response.data.msg);
     if (response.data.status == 1) {
-      localStorage.setItem('userDetails', JSON.stringify(response.data.user));
+      dispatch(login({
+        userToken: response.data.userToken
+      }))
+
       setTimeout(() => {
         if (searchUrl.get('redirect')) {
           router.push(`${searchUrl.get('redirect')}`);

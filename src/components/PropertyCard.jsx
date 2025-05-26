@@ -2,8 +2,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useContext, useEffect, useState } from 'react';
-import axiosInstance from './config/axiosInstace';
-
 import LikeButton from '../components/LikeButton';
 import { AuthContext } from '@/context/AuthContext';
 
@@ -16,6 +14,8 @@ export default function PropertyPage() {
 
   const soon_Property = property?.filter((data) => data.status === 'soon');
   const available_Property = property?.filter((data) => data.status === 'available');
+  const popular_Property = property?.filter((data) => data.status === 'popular');
+
 
   const renderCard = (data) => (
     <div
@@ -58,11 +58,29 @@ export default function PropertyPage() {
     <>
       <div className="text-center">
         <h1 className="text-3xl font-bold sm:pt-6 pt-1 md:pb-3 pb-1.5 underline underline-offset-8 decoration-[#BFA249] decoration-4">
+          New Projects
+        </h1>
+      </div>
+      <div className="px-2 md:px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {property.slice(0, 6)?.map(renderCard)}
+      </div>
+
+      <div className="text-center">
+        <h1 className="text-3xl font-bold sm:pt-6 pt-1 md:pb-3 pb-1.5 underline underline-offset-8 decoration-[#BFA249] decoration-4">
           Featured Projects
         </h1>
       </div>
       <div className="px-2 md:px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {available_Property?.map(renderCard)}
+      </div>
+
+      <div className="text-center">
+        <h1 className="text-3xl font-bold sm:pt-6 pt-1 md:pb-3 pb-1.5 underline underline-offset-8 decoration-[#BFA249] decoration-4">
+          Popular Projects
+        </h1>
+      </div>
+      <div className="px-2 md:px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {popular_Property?.map(renderCard)}
       </div>
 
       <div className="text-center">
@@ -73,6 +91,7 @@ export default function PropertyPage() {
       <div className="px-2 md:px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {soon_Property?.map(renderCard)}
       </div>
+
     </>
   );
 }

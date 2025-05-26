@@ -1,53 +1,49 @@
-import { posts } from "../../../data/posts";
-import { notFound } from "next/navigation";
+'use client'
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Statistics from '@/components/Statistics';
 import CommentsSection from '@/components/CommentsSection';
+import { AuthContext } from "@/context/AuthContext";
+import { use, useContext, useEffect } from "react";
 
-export async function generateStaticParams() {
-  return posts.map((post) => ({
-    id: post.id.toString(),
-  }));
-}
 
-export default async function BlogPost({ params }) {
-  const { id } = params;
-  const postId = parseInt(id, 10);
-  const post = posts.find((p) => p.id === postId);
 
-  if (!post) {
-    notFound();
-  }
+export default function Blogblog({ params }) {
+  const { id } = use(params);
+  const { view_Blog, blog } = useContext(AuthContext);
 
-  const initialComments = [
-    {
-      author: 'Seven Unique',
-      content: 'Great post!',
-      date: '4/24/2025 12:00 PM',
-    },
-  ];
+   useEffect(
+    () => {
+      view_Blog(id)
+    }, []
+  )
+
+
 
   return (
     <>
       <Navbar />
       <div className="flex max-w-7xl mx-auto px-3 md:px-6 pt-30 py-12 gap-8 overflow-x-hidden">
         <div className="w-full md:w-3/5">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">{post.title}</h1>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">{blog.title}</h1>
 
           <img
-            src={post.image}
-            alt={`Image for ${post.title}`}
+            src={blog.mainImage}
+            alt={`Image for ${blog.title}`}
             className="w-full h-64 object-cover rounded mb-6"
           />
 
-          <p className="font-bold text-gray-600 mb-8">{post.description}</p>
+          <p className="font-bold text-gray-600 mb-8">{blog.short_description}</p>
 
           <article className="prose prose-lg text-gray-700 max-w-none whitespace-pre-line">
-            {post.content}
+            {blog.long_description}
+          </article>
+          <article className="prose prose-lg text-gray-700 max-w-none whitespace-pre-line">
+            {blog.contect}
           </article>
 
-          <CommentsSection initialComments={initialComments} />
+          <CommentsSection data={blog.comment} />
         </div>
 
         <aside className="hidden md:block w-full md:w-2/5 space-y-6">
@@ -87,7 +83,7 @@ export default async function BlogPost({ params }) {
           </div>
 
           <div className="rounded-2xl overflow-hidden border border-[#bdd6fc] shadow-md shadow-[#85a4d1] bg-white px-5 py-7 space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-700 mb-4">Recent Posts</h2>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">Recent blogs</h2>
             <ul className="text-gray-500 font-medium space-y-3">
               <li className="hover:text-gray-700">The Best Real Estate Investments for 2025</li>
               <hr className="border-t-1 border-[#BFA249]" />
