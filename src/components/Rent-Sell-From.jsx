@@ -1,57 +1,63 @@
 'use client';
 import Link from 'next/link';
 
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import axiosInstance from './config/axiosInstace';
+import { AuthContext } from '@/context/AuthContext';
+import { useSelector } from 'react-redux';
 
 export default function RentSellForm() {
+  const { showAlert } = useContext(AuthContext)
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    name: '',
-    contact: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
+  const user = useSelector(state => state.user.data)
 
-  const [submitted, setSubmitted] = useState(false);
 
-  // Redirect to login if not logged in
   useEffect(() => {
-    const isLoggedIn = JSON.parse(localStorage.getItem('userDetails'));
-    if (!isLoggedIn) {
+    if (!user) {
       router.push('/LogIn?redirect=/Rent-sell');
     }
-  }, [router]);
+  }, [router, user._id]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form data:', formData);
-    setSubmitted(true);
-    setFormData({
-      name: '',
-      contact: '',
-      email: '',
-      subject: '',
-      message: '',
-    });
+    const formData = new FormData();
 
-    setTimeout(() => setSubmitted(false), 4000);
+    formData.append('mainImage', e.target.mainImage.files[0]);
+    for (let img of e.target.maltipleImage.files) {
+      formData.append('maltipleImage', img);
+    }
+    formData.append('title', e.target.title.value);
+    formData.append('price', e.target.price.value);
+    formData.append('state', e.target.state.value);
+    formData.append('city', e.target.city.value);
+    formData.append('address', e.target.address.value);
+    formData.append('area', e.target.area.value);
+    formData.append('category', e.target.category.value);
+    formData.append('propertyType', e.target.propertyType.value);
+    formData.append('short_description', e.target.short_description.value);
+    formData.append('long_description', e.target.long_description.value);
+    formData.append('user_Id', user._id);
+
+    try {
+      const response = await axiosInstance.post('/property/create', formData);
+      showAlert(response.data.status, response.data.msg);
+      if (response.data.status == 1) {
+        e.target.reset()
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+
+
   };
 
   return (
     <section className="py-6 bg-white">
       <div className="max-w-7xl mx-auto px-3 md:px-4">
-        <div className="flex flex-col shadow-lg rounded-lg overflow-hidden">
+        <div className="flex flex-col rounded-lg overflow-hidden">
           <div className="py-6 px-3 sm:px-6 rounded-sm">
             <h2 className="text-3xl text-center font-bold mb-6 text-gray-600 underline underline-offset-8 decoration-[#BFA249] decoration-2">
               Submit Your Property for Sale or Rent
@@ -59,86 +65,162 @@ export default function RentSellForm() {
             <p className="text-center mb-6 text-gray-400">
               Please provide the necessary details below to sell or rent your property.
             </p>
-            {submitted && (
-              <div className="mb-4 p-4 bg-green-100 text-green-800 rounded">
-                Your message has been sent successfully!
-              </div>
-            )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="md:flex md:space-x-4 space-y-5 md:space-y-0">
-                <div className="md:w-1/2">
+
+            <form onSubmit={handleSubmit} className="space-y-8 bg-white p-6 shadow-xl rounded-xl max-w-4xl mx-auto">
+              <h2 className="text-2xl font-semibold text-gray-800 border-b pb-2">Submit a Property</h2>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Property Title</label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Name"
+                    name="title"
                     required
-                    className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                    placeholder="Enter title"
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
                   />
                 </div>
-                <div className="md:w-1/2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
                   <input
-                    type="tel"
-                    name="contact"
-                    value={formData.contact}
-                    onChange={handleChange}
+                    type="text"
+                    name="price"
                     required
-                    placeholder="Contact Number"
-                    className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                    placeholder="Enter price"
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
                   />
                 </div>
               </div>
 
-              <div className="md:flex md:space-x-4 space-y-5 md:space-y-0">
-                <div className="md:w-1/2">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    type="text"
+                    name="state"
                     required
-                    placeholder="Email"
-                    className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                    placeholder="Enter state"
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
                   />
                 </div>
-                <div className="md:w-1/2">
-                  <select
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <input
+                    type="text"
+                    name="city"
                     required
-                    className="w-full border text-gray-500 border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-[#a38a3e] outline-none"
-                  >
-                    <option value="">Select an option</option>
-                    <option value="submit-for-sell">Submit Property for Sell</option>
-                    <option value="submit-for-rent">Submit Property for Rent</option>
-                    <option value="submit-for-joint">Submit Property for Joint</option>
-                    <option value="submit-for-other">Other Enquiry</option>
-                  </select>
+                    placeholder="Enter city"
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                  />
                 </div>
               </div>
 
               <div>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows="4"
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <input
+                  type="text"
+                  name="address"
                   required
-                  placeholder="Message"
-                  className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                  placeholder="Enter full address"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
+                  <input
+                    type="text"
+                    name="area"
+                    required
+                    placeholder="e.g., 1200 sqft"
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                  <input
+                    type="text"
+                    name="category"
+                    required
+                    placeholder="e.g., Residential, Commercial"
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+                <select
+                  name="propertyType"
+                  required
+                  className="w-full border text-gray-700 border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                >
+                  <option value="">Select property type</option>
+                  <option value="buy">Buy</option>
+                  <option value="sell">Sell</option>
+                  <option value="rent">Rent</option>
+                </select>
+              </div>
+
+              {/* Image Uploads */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Main Image</label>
+                  <input
+                    type="file"
+                    name="mainImage"
+                    required
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Multiple Images</label>
+                  <input
+                    type="file"
+                    name="maltipleImage"
+                    multiple
+                    className="w-full border border-gray-300 px-4 py-2 rounded-lg"
+                  />
+                </div>
+              </div>
+
+              {/* Descriptions */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Short Description</label>
+                <textarea
+                  name="short_description"
+                  rows="2"
+                  required
+                  placeholder="Brief summary..."
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
                 ></textarea>
               </div>
 
-              <button
-                type="submit"
-                className="bg-[#a38a3e] text-white px-4 py-2 rounded-md hover:bg-[#8e7833] transition duration-200"
-              >
-                Send Message
-              </button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Long Description</label>
+                <textarea
+                  name="long_description"
+                  rows="5"
+                  required
+                  placeholder="Detailed description of the property..."
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#a38a3e] outline-none"
+                ></textarea>
+              </div>
+
+              {/* Submit Button */}
+              <div className="text-right">
+                <button
+                  type="submit"
+                  className="bg-[#a38a3e] cursor-pointer text-white font-semibold px-6 py-2 rounded-lg hover:bg-[#8e7833] transition duration-200"
+                >
+                  Submit Property
+                </button>
+              </div>
             </form>
+
+
           </div>
         </div>
       </div>

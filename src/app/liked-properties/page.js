@@ -6,18 +6,13 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Statistics from '@/components/Statistics';
 import { FaHeart } from 'react-icons/fa';
+import LikeButton from '@/components/LikeButton';
+import { useSelector } from 'react-redux';
 
 export default function LikedPropertiesPage() {
-  const [likedProperties, setLikedProperties] = useState([]);
+  const user = useSelector(state => state.user.data)
 
 
-  useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-    if (userDetails) {
-      setLikedProperties(userDetails.likedProperties || []);
-    }
-
-  }, []);
 
   // const removeFromLiked = (id) => {
   //   const updated = likedProperties.filter((property) => property._id !== id);
@@ -25,7 +20,7 @@ export default function LikedPropertiesPage() {
   //   localStorage.setItem('likedProperties', JSON.stringify(updated));
   // };
 
-  if (likedProperties.length === 0) {
+  if (user?.likedProperties.length === 0) {
     return (
       <>
         <Navbar />
@@ -49,19 +44,12 @@ export default function LikedPropertiesPage() {
       </h1>
 
       <div className="px-3 md:px-6 md:pb-7 pb-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {likedProperties.map((data, index) => (
+        {user?.likedProperties.map((data, index) => (
           <div
             key={index}
             className="bg-white shadow-md rounded-lg overflow-x-hidden overflow-hidden transition-transform duration-300 hover:scale-105 relative"
           >
-            {/* Remove Button */}
-            <button
-              onClick={() => removeFromLiked(data._id)}
-              className="absolute top-2 right-2 z-10 bg-white/80 p-1.5 rounded-full shadow hover:scale-110 transition-transform"
-              title="Remove from liked"
-            >
-              <FaHeart className="text-xl text-red-500" />
-            </button>
+            <LikeButton property={data} />
 
             <div className="relative h-36 sm:h-48 w-full">
               <Image

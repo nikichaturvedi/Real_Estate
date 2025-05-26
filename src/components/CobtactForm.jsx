@@ -1,8 +1,11 @@
 'use client';
 import { MapPinIcon } from '@heroicons/react/24/solid';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import axiosInstance from './config/axiosInstace';
+import { AuthContext } from '@/context/AuthContext';
 
 export default function ContactForm() {
+    const { showAlert } = useContext(AuthContext)
     const [formData, setFormData] = useState({
         name: '',
         contact: '',
@@ -11,7 +14,6 @@ export default function ContactForm() {
         message: '',
     });
 
-    const [submitted, setSubmitted] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,35 +23,35 @@ export default function ContactForm() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form data:', formData);
-        setSubmitted(true);
-        setFormData({
-            name: '',
-            contact: '',
-            email: '',
-            subject: '',
-            message: '',
-        });
+        try {
+            const response = await axiosInstance.post('/contect/create', formData);
+            showAlert(response.data.status, response.data.msg)
+            if (response.data.status == 1) {
+                setFormData({
+                    name: '',
+                    contact: '',
+                    email: '',
+                    subject: '',
+                    message: '',
+                })
+            }
 
-        setTimeout(() => setSubmitted(false), 4000);
+        } catch (error) {
+            console.log(error);
+        }
+
     };
 
     return (
         <section className="py-10 bg-white">
             <div className="max-w-7xl mx-auto px-2">
                 <div className="flex flex-col md:flex-row md:space-x-10 space-y-10 md:space-y-0 shadow-xl bg-white rounded-2xl overflow-hidden p-2 sm:p-6">
-                    
+
                     {/* Contact Form */}
                     <div className="md:w-1/2">
                         <h2 className="text-3xl text-center font-bold mb-6 text-gray-700">Contact Us</h2>
-
-                        {submitted && (
-                            <div className="mb-4 p-4 bg-green-100 text-green-800 rounded shadow">
-                                Your message has been sent successfully!
-                            </div>
-                        )}
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="md:flex md:space-x-4 space-y-5 md:space-y-0">
                                 <input
@@ -105,7 +107,7 @@ export default function ContactForm() {
 
                             <button
                                 type="submit"
-                                className="bg-[#a38a3e] text-white px-2 py-2 sm:px-4 sm:py-3 font-semibold rounded-md hover:bg-[#8e7833] shadow-md hover:scale-105 transition-transform duration-300"
+                                className="bg-[#a38a3e] cursor-pointer text-white px-2 py-2 sm:px-4 sm:py-3 font-semibold rounded-md hover:bg-[#8e7833] shadow-md hover:scale-105 transition-transform duration-300"
                             >
                                 Send Message
                             </button>

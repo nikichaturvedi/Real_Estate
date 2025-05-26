@@ -2,18 +2,18 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: 'https://admin-property.onrender.com',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // headers: {
+  //   'Content-Type': 'application/json',
+  // },
 });
 
 // ✅ Request Interceptor — safely set token only in browser
 axiosInstance.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('userToken');
       if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `${token}`;
       }
     }
     return config;
